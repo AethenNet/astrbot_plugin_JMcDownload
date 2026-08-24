@@ -1,0 +1,6 @@
+# JMComic 禁漫天堂爬虫库
+# 提供本子搜索、详情获取、图片下载解密等功能
+jmcomic>=2.0.0
+
+# 注意：带密码的 ZIP 打包使用系统 zip 命令（Info-ZIP），
+# 绝大多数 Linux 发行版默认已安装。如未安装请执行：apt install zip / yum install zip

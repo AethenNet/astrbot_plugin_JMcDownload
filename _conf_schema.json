@@ -1,0 +1,129 @@
+{
+  "search_config": {
+    "description": "搜索功能",
+    "type": "object",
+    "items": {
+      "enable_search": {
+        "description": "搜索链接发送",
+        "hint": "开启后允许使用 /搜索本子 指令",
+        "type": "bool",
+        "default": true
+      },
+      "enable_link": {
+        "description": "链接发送",
+        "hint": "开启后搜索结果中包含链接，关闭则不显示链接",
+        "type": "bool",
+        "default": true
+      },
+      "group_mode": {
+        "description": "模式切换",
+        "hint": "开启为黑名单模式（黑名单群不发送链接），关闭为白名单模式（仅白名单群发送链接）",
+        "type": "bool",
+        "default": true
+      },
+      "blacklist_groups": {
+        "description": "黑名单群列表",
+        "hint": "黑名单模式下，这些群的搜索结果不包含链接",
+        "type": "list",
+        "default": []
+      },
+      "whitelist_groups": {
+        "description": "白名单群列表",
+        "hint": "白名单模式下，仅这些群的搜索结果包含链接",
+        "type": "list",
+        "default": []
+      }
+    }
+  },
+  "download_config": {
+    "description": "下载功能",
+    "type": "object",
+    "items": {
+      "enable_download": {
+        "description": "下载开关",
+        "hint": "开启后允许使用 /下载本子 指令",
+        "type": "bool",
+        "default": true
+      },
+      "group_mode": {
+        "description": "模式切换",
+        "hint": "开启为黑名单模式（黑名单群不可下载），关闭为白名单模式（仅白名单群可下载）",
+        "type": "bool",
+        "default": true
+      },
+      "blacklist_groups": {
+        "description": "黑名单群列表",
+        "hint": "黑名单模式下，这些群不可使用下载功能",
+        "type": "list",
+        "default": []
+      },
+      "whitelist_groups": {
+        "description": "白名单群列表",
+        "hint": "白名单模式下，仅这些群可使用下载功能",
+        "type": "list",
+        "default": []
+      }
+    }
+  },
+  "group_filter": {
+    "description": "群黑白名单",
+    "hint": "全局群过滤，对搜索和下载都生效。私聊消息不受限制。",
+    "type": "object",
+    "items": {
+      "group_mode": {
+        "description": "模式切换",
+        "hint": "开启为黑名单模式（黑名单群不可用），关闭为白名单模式（仅白名单群可用）",
+        "type": "bool",
+        "default": true
+      },
+      "blacklist_groups": {
+        "description": "黑名单群列表",
+        "hint": "黑名单模式下，这些群不可使用插件功能",
+        "type": "list",
+        "default": []
+      },
+      "whitelist_groups": {
+        "description": "白名单群列表",
+        "hint": "白名单模式下，仅这些群可使用插件功能",
+        "type": "list",
+        "default": []
+      }
+    }
+  },
+  "max_download_size_mb": {
+    "description": "下载大小限制",
+    "hint": "下载文件总大小超过此限制将自动删除。滑动调节范围：1-200 MB，默认15MB",
+    "type": "int",
+    "default": 15,
+    "slider": {
+      "min": 1,
+      "max": 200,
+      "step": 1
+    }
+  },
+  "archive_config": {
+    "description": "压缩包配置",
+    "type": "object",
+    "items": {
+      "archive_format": {
+        "description": "压缩格式",
+        "hint": "选择压缩包格式，zip 或 7z",
+        "type": "string",
+        "default": "zip",
+        "options": ["zip", "7z"]
+      },
+      "random_password": {
+        "description": "默认密码",
+        "hint": "开启代表使用随机生成8位密码（英文数字混合，小写英文），关闭代表使用自定义密码",
+        "type": "bool",
+        "default": true
+      },
+      "custom_password": {
+        "description": "自定义密码",
+        "hint": "当默认密码开关关闭时，使用此自定义密码",
+        "type": "string",
+        "default": "jmcomic"
+      }
+    }
+  }
+}
