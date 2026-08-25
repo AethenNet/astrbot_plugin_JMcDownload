@@ -6,6 +6,7 @@ display_name: JMComic下载器
 short_desc: 搜索并下载JMc资源，支持合并转发详情与互斥下载
 homepage: https://github.com/AethenNet/astrbot_plugin_JMcDownload
 logo: logo.png
+category: 工具
 support_platforms:
   - aiocqhttp
 astrbot_version: ">=4.0.0"
