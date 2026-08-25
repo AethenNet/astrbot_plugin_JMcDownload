@@ -9,3 +9,5 @@ logo: logo.png
 support_platforms:
   - aiocqhttp
 astrbot_version: ">=4.0.0"
+tags:
+  - 工具
