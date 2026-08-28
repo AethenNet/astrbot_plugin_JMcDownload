@@ -405,18 +405,60 @@ class JMComicPlugin(Star):
             )
 
     def _fetch_album_detail(self, jm_id: str):
-        """同步方法：通过网页端客户端获取本子详情（可正确获取日期、页数）。"""
+        """
+        同步方法：获取本子详情。
+        混合策略：先用移动端 API（兼容性好），如果日期/页数获取失败再尝试网页端。
+        """
         import jmcomic
 
-        option = jmcomic.create_option_by_str(
+        # 第一步：使用移动端 API 获取基本信息（兼容性好，不需要登录）
+        api_option = jmcomic.create_option_by_str(
             """
 client:
-  impl: html
+  impl: api
   retry_times: 3
 """
         )
-        client = option.build_jm_client()
-        album = client.get_album_detail(jm_id)
+        api_client = api_option.build_jm_client()
+        album = api_client.get_album_detail(jm_id)
+
+        # 第二步：检查日期和页数，如果是 '0' 或空，尝试用网页端补充
+        pub_date = getattr(album, "pub_date", None)
+        page_count = getattr(album, "page_count", None)
+
+        need_html_fallback = (
+            not pub_date or pub_date == "0" or pub_date == 0 or
+            not page_count or page_count == "0" or page_count == 0
+        )
+
+        if need_html_fallback:
+            try:
+                # 尝试用网页端获取完整信息
+                html_option = jmcomic.create_option_by_str(
+                    """
+client:
+  impl: html
+  retry_times: 2
+"""
+                )
+                html_client = html_option.build_jm_client()
+                html_album = html_client.get_album_detail(jm_id)
+
+                # 用网页端的数据补充移动端缺失的字段
+                if (not pub_date or pub_date == "0" or pub_date == 0):
+                    html_pub_date = getattr(html_album, "pub_date", None)
+                    if html_pub_date and html_pub_date != "0":
+                        album.pub_date = html_pub_date
+
+                if (not page_count or page_count == "0" or page_count == 0):
+                    html_page_count = getattr(html_album, "page_count", None)
+                    if html_page_count and html_page_count != "0":
+                        album.page_count = html_page_count
+
+            except Exception:
+                # 网页端获取失败，保持移动端的数据
+                pass
+
         return album
 
     # ===================================================================

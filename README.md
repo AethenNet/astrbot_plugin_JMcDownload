@@ -89,3 +89,7 @@
 
 - [JMComic-Crawler-Python](https://github.com/hect0x7/JMComic-Crawler-Python) by hect0x7 — 核心爬虫库
 - [JMComic-qt](https://github.com/tonquer/JMComic-qt) by tonquer — 图片分割算法与移动端 API 参考
+
+## 许可证
+
+MIT License
