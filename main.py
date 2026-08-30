@@ -462,6 +462,62 @@ client:
         return album
 
     # ===================================================================
+    # 指令：下载预览
+    # ===================================================================
+    @filter.command("下载预览")
+    async def preview_download(self, event: AstrMessageEvent, jm_id: str):
+        """预览下载信息：页数、预估时间。用法：/下载预览 <车号>"""
+        # ---------- 参数校验 ----------
+        jm_id = jm_id.strip()
+        if not jm_id.isdigit():
+            yield event.plain_result("❌ 请输入有效的纯数字车号，例如：/下载预览 350234")
+            return
+
+        # ---------- 获取本子详情 ----------
+        try:
+            album = await asyncio.to_thread(self._fetch_album_detail, jm_id)
+            page_count = getattr(album, "page_count", 0)
+            album_name = getattr(album, "name", "未知")
+        except Exception as e:
+            yield event.plain_result(f"❌ 获取本子信息失败：{e}")
+            return
+
+        # 页数处理
+        try:
+            page_count = int(page_count)
+        except (ValueError, TypeError):
+            page_count = 0
+
+        # 预估下载时间
+        if page_count > 0:
+            est_seconds = max(5, int(page_count * EST_SECONDS_PER_IMAGE))
+        else:
+            est_seconds = 30
+
+        # 读取最大下载页数配置
+        max_pages = self.plugin_config.get("max_download_pages", 150)
+        try:
+            max_pages = int(max_pages)
+        except (ValueError, TypeError):
+            max_pages = 150
+        max_pages = max(5, min(1000, max_pages))
+
+        # 构建回复
+        reply = (
+            f"🛡️ 正在评估… {jm_id}\n"
+            f"────────────────\n"
+            f"{album_name}\n"
+            f"📄 共 {page_count} 页\n"
+            f"⏱️ 预计需要 {est_seconds}秒"
+        )
+
+        # 页数超限检查
+        if page_count > max_pages:
+            reply += f"\n❌ 当前 {jm_id} 内容超过设定值暂不支持下载"
+
+        yield event.plain_result(reply)
+
+    # ===================================================================
     # 指令：下载本子
     # ===================================================================
     @filter.command("下载本子")
@@ -513,6 +569,28 @@ client:
                 except Exception:
                     page_count = 0
                     album_name = "未知"
+
+                # 页数处理
+                try:
+                    page_count = int(page_count)
+                except (ValueError, TypeError):
+                    page_count = 0
+
+                # 读取最大下载页数配置
+                max_pages = self.plugin_config.get("max_download_pages", 150)
+                try:
+                    max_pages = int(max_pages)
+                except (ValueError, TypeError):
+                    max_pages = 150
+                max_pages = max(5, min(1000, max_pages))
+
+                # 页数超限检查
+                if page_count > max_pages:
+                    yield event.plain_result(
+                        f"❌ 当前 {jm_id} 内容超过设定值暂不支持下载\n"
+                        f"📄 共 {page_count} 页，限制为 {max_pages} 页"
+                    )
+                    return
 
                 # 估算下载时间
                 if page_count > 0:

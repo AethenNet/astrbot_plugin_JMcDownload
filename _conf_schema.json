@@ -101,6 +101,17 @@
       "step": 1
     }
   },
+  "max_download_pages": {
+    "description": "最大下载页数",
+    "hint": "下载页数超过此限制将拒绝下载。滑动调节范围：5-1000 页，默认150页，步长10",
+    "type": "int",
+    "default": 150,
+    "slider": {
+      "min": 5,
+      "max": 1000,
+      "step": 10
+    }
+  },
   "archive_config": {
     "description": "压缩包配置",
     "type": "object",
